@@ -1,0 +1,7 @@
+greenlet==3.2.4
+sqlalchemy==2.0.43
+typing-extensions==4.15.0
+asgiref==3.9.1
+django==5.2.6
+sqlparse==0.5.3
+tzdata==2025.2
