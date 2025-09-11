@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Случайная цитата</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+    
+    <style>
+        .bg-wrapper {
+            background-image: url("{% static bg_path %}");
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.7) saturate(1.1);
+        }
+    </style>
+</head>
+<body class="bg-container">
+    <div class="bg-wrapper" style="background-image: url('{% static bg_path %}');"></div>
+    
+    <div class="content">
+        {% if quote %}
+            <div class="quote-card">
+                <blockquote class="quote-text">
+                    “{{ quote.text }}”
+                </blockquote>
+                <p class="source">— {{ quote.source }}</p>
+
+                <div class="stats">
+                    <span class="views">👁️ {{ quote.views }}</span>
+                </div>
+
+                <div class="actions">
+                    <button onclick="likeQuote('{{ quote.id }}')" class="btn btn-like">
+                        <span class="btn-icon">👍</span> {{ quote.likes }}
+                    </button>
+                    <button onclick="dislikeQuote('{{ quote.id }}')" class="btn btn-dislike">
+                        <span class="btn-icon">👎</span> {{ quote.dislikes }}
+                    </button>
+                    <a href="{% url 'random_quote_view' %}" class="btn btn-refresh">
+                        <span class="btn-icon">↻</span> Новая цитата
+                    </a>
+                </div>
+            </div>
+
+            <div class="top-section">
+                <h2>Топ-10 цитат</h2>
+                <ol class="top-list">
+                    {% for top in top_quotes %}
+                    <li>
+                        <span class="top-rank">{{ forloop.counter }}</span>
+                        <div class="top-content">
+                            <p class="top-text">«{{ top.text|truncatechars:80 }}»</p>
+                            <p class="top-source">— {{ top.source }} <span class="top-likes">(👍 {{ top.likes }})</span></p>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="empty-top">Пока нет популярных цитат.</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h1>Цитаты закончились</h1>
+                <p>Добавьте новые через админку!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        async function likeQuote(quoteId) {
+            await fetch(`/like/${quoteId}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+            });
+            location.reload();
+        }
+
+        async function dislikeQuote(quoteId) {
+    await fetch(`/dislike/${quoteId}/`, {  // ← Исправлено: quoteId вместо quote_id
+        method: 'POST',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+    });
+    location.reload();
+}
+    </script>
+</body>
+</html>
