@@ -25,7 +25,6 @@ SECRET_KEY = "django-insecure-yt8m!&4)(a3z3)jswn-j!m)mc_s+(r&&d3j-@l!8_=a*o-pwz_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -138,4 +137,4 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-ALLOWED_HOSTS = ['yourusername.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ricardsh.pythonanywhere.com', 'localhost', '127.0.0.1']
