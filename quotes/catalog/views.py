@@ -31,6 +31,9 @@ def get_random_quote():
 
 def random_quote_view(request):
     quote = get_random_quote()
+    if quote:
+        quote.views += 1  # Предполагается, что в модели Quote есть поле views
+        quote.save(update_fields=["views"])
     bg_image = get_random_background_image()
     bg_path = f"myapp/image/{bg_image}"
     form = QuoteForm()
