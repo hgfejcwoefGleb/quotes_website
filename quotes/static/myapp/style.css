@@ -275,3 +275,37 @@ body {
         align-self: flex-start;
     }
 }
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.empty-state h1 {
+    color: #4a5568;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.empty-state p {
+    color: #718096;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.add-first-quote {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: #f7fafc;
+    border-radius: 8px;
+    border: 2px dashed #cbd5e0;
+}
+
+.add-first-quote h3 {
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+}

@@ -137,6 +137,316 @@
                 font-size: 12px;
             }
         }
+
+        /* НОВЫЙ ДИЗАЙН ФОРМЫ ДОБАВЛЕНИЯ ЦИТАТЫ */
+        .add-quote-section {
+    position: relative;
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin: 2rem auto;
+    max-width: 700px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 10;
+}
+
+.add-quote-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('{% static bg_path %}');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.7) saturate(1.1) blur(2px);
+    z-index: -1;
+}
+
+.add-quote-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    border-radius: 16px;
+}
+
+.add-quote-section h2 {
+    color: white;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.quote-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+/* Основной стиль полей ввода */
+.form-input,
+.form-textarea,
+.form-select {
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); /* для Safari */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Стиль placeholder */
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+    font-style: italic;
+    transition: color 0.3s ease;
+}
+
+/* Плавное исчезновение placeholder при фокусе */
+.form-input:focus::placeholder,
+.form-textarea:focus::placeholder {
+    color: transparent;
+}
+
+/* Стиль при фокусе */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: rgba(72, 187, 120, 0.8); /* цвет акцента — зелёный градиент кнопки */
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.25);
+    transform: translateY(-1px);
+    color: rgb(232, 31, 31);
+}
+
+/* Стиль для select со стрелочкой */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.7)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.2rem center;
+    background-size: 16px;
+    padding-right: 2.5rem;
+}
+
+/* При фокусе — подсвечиваем стрелку */
+.form-select:focus {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+}
+
+/* Подсветка ошибок */
+.form-input.error,
+.form-textarea.error,
+.form-select.error {
+    border-color: rgba(239, 68, 68, 0.8);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.form-input.error:focus,
+.form-textarea.error:focus,
+.form-select.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Маленький текст подсказки */
+.form-group small {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    font-style: italic;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+/* Если есть ошибка — подсвечиваем подсказку тоже */
+.form-group .error + small,
+.form-group .error-list + small {
+    color: #fca5a5;
+}
+.btn-add-quote {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    padding: 1.2rem 2.5rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-add-quote:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+}
+
+.auth-required {
+    text-align: center;
+    padding: 2.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-required a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-required a:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+.message {
+    padding: 1.2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: slideIn 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.error {
+    color: #fca5a5;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+        .error-list {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .error-item {
+            color: #c53030;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .error-item::before {
+            content: '⚠️';
+        }
+
+        /* Анимации */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Адаптивность для формы */
+        @media (max-width: 768px) {
+            .add-quote-section {
+                padding: 1.8rem;
+                margin: 1.5rem;
+            }
+            
+            .add-quote-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .btn-add-quote {
+                align-self: stretch;
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .quote-form {
+                gap: 1.5rem;
+            }
+        }
+    .btn-top {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #f6ad55, #ed8936); /* оранжево-золотой градиент — под иконку 🏆 */
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-top:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(246, 173, 85, 0.4);
+    background: linear-gradient(135deg, #f6ad55, #dd6b20);
+}
+
+.btn-top .btn-icon {
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+}
+.actions .btn-top {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+
     </style>
 </head>
 <body class="bg-container">
@@ -177,51 +487,108 @@
                 <blockquote class="quote-text">
                     “{{ quote.text }}”
                 </blockquote>
-                <p class="source">— {{ quote.source }}</p>
+                <p class="source">— {{ quote.source.name }} 
+                    {% if quote.source.source_type %}
+                        <small>({{ quote.source.source_type.name }})</small>
+                    {% endif %}
+                </p>
 
                 <div class="stats">
                     <span class="views">👁️ {{ quote.views }}</span>
                 </div>
 
                 <div class="actions">
-                    <!-- Кнопки с data-атрибутами для неавторизованных пользователей -->
-                    {% if user.is_authenticated %}
-                        <button onclick="likeQuote('{{ quote.id }}')" class="btn btn-like">
-                            <span class="btn-icon">👍</span> {{ quote.likes }}
-                        </button>
-                        <button onclick="dislikeQuote('{{ quote.id }}')" class="btn btn-dislike">
-                            <span class="btn-icon">👎</span> {{ quote.dislikes }}
-                        </button>
-                    {% else %}
-                        <button onclick="handleVote('like', '{{ quote.id }}')" class="btn btn-like">
-                            <span class="btn-icon">👍</span> {{ quote.likes }}
-                        </button>
-                        <button onclick="handleVote('dislike', '{{ quote.id }}')" class="btn btn-dislike">
-                            <span class="btn-icon">👎</span> {{ quote.dislikes }}
-                        </button>
-                    {% endif %}
-                    
-                    <a href="{% url 'random_quote_view' %}" class="btn btn-refresh">
-                        <span class="btn-icon">↻</span> Новая цитата
-                    </a>
-                </div>
+    {% if user.is_authenticated %}
+        <button onclick="likeQuote('{{ quote.id }}')" class="btn btn-like">
+            <span class="btn-icon">👍</span> {{ quote.likes }}
+        </button>
+        <button onclick="dislikeQuote('{{ quote.id }}')" class="btn btn-dislike">
+            <span class="btn-icon">👎</span> {{ quote.dislikes }}
+        </button>
+    {% else %}
+        <button onclick="handleVote('like', '{{ quote.id }}')" class="btn btn-like">
+            <span class="btn-icon">👍</span> {{ quote.likes }}
+        </button>
+        <button onclick="handleVote('dislike', '{{ quote.id }}')" class="btn btn-dislike">
+            <span class="btn-icon">👎</span> {{ quote.dislikes }}
+        </button>
+    {% endif %}
+    
+    <a href="{% url 'random_quote_view' %}" class="btn btn-refresh">
+        <span class="btn-icon">↻</span> Новая цитата
+    </a>
+
+    <!-- Кнопка ТОП — теперь внутри .actions, под кнопками -->
+    <div style="margin-top: 1rem;">
+        <a href="{% url 'top_quotes' %}" class="btn btn-top" title="ТОП цитат по рейтингу">
+            <span class="btn-icon">🏆</span> ТОП
+        </a>
+    </div>
+</div>
+ 
             </div>
 
-            <div class="top-section">
-                <h2>Топ-10 цитат</h2>
-                <ol class="top-list">
-                    {% for top in top_quotes %}
-                    <li>
-                        <span class="top-rank">{{ forloop.counter }}</span>
-                        <div class="top-content">
-                            <p class="top-text">«{{ top.text|truncatechars:80 }}»</p>
-                            <p class="top-source">— {{ top.source }} <span class="top-likes">(👍 {{ top.likes }})</span></p>
+            <div class="add-quote-section">
+                <h2>📝 Добавить новую цитату</h2>
+                
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'add_quote' %}" class="quote-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.text.id_for_label }}">{{ form.text.label }}</label>
+                            {{ form.text }}
+                            {% if form.text.errors %}
+                                <div class="error">{{ form.text.errors }}</div>
+                            {% endif %}
+                            <small>Введите текст цитаты. Будьте внимательны к пунктуации.</small>
                         </div>
-                    </li>
-                    {% empty %}
-                    <li class="empty-top">Пока нет популярных цитат.</li>
-                    {% endfor %}
-                </ol>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.source_name.id_for_label }}">{{ form.source_name.label }}</label>
+                            {{ form.source_name }}
+                            {% if form.source_name.errors %}
+                                <div class="error">{{ form.source_name.errors }}</div>
+                            {% endif %}
+                            <small>{{ form.source_name.help_text }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.source_type.id_for_label }}">{{ form.source_type.label }}</label>
+                            {{ form.source_type }}
+                            {% if form.source_type.errors %}
+                                <div class="error">{{ form.source_type.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.weight.id_for_label }}">{{ form.weight.label }}</label>
+                            {{ form.weight }}
+                            <small>Чем выше вес, тем чаще цитата будет показываться (по умолчанию: 1)</small>
+                            {% if form.weight.errors %}
+                                <div class="error">{{ form.weight.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn-add-quote">
+                            <span class="btn-icon">➕</span> Добавить цитату
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="auth-required">
+                        <p>Чтобы добавлять цитаты, пожалуйста, <a href="{% url 'login' %}?next={{ request.path }}">🔑 войдите в систему</a></p>
+                    </div>
+                {% endif %}
+                
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message {{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         {% else %}
             <div class="empty-state">
@@ -232,126 +599,117 @@
     </div>
 
     <script>
-    // Глобальные переменные для хранения состояния
-    let pendingVote = null;
-    let pendingQuoteId = null;
-    
-    function handleVote(type, quoteId) {
-        if (!userIsAuthenticated) {
-            // Сохраняем тип голоса для последующего применения
-            pendingVote = type;
-            pendingQuoteId = quoteId;
-            showAuthModal();
-        } else {
-            // Если пользователь авторизован, сразу отправляем голос
-            if (type === 'like') {
-                likeQuote(quoteId);
-            } else {
-                dislikeQuote(quoteId);
-            }
-        }
-    }
-    
-    function showAuthModal() {
-        document.getElementById('authModal').style.display = 'flex';
-    }
-    
-    function closeModal() {
-        document.getElementById('authModal').style.display = 'none';
-    }
-    
-    function redirectToLogin() {
-        // Перенаправляем на страницу логина с параметром next
-        const currentUrl = window.location.pathname;
-        window.location.href = `{% url 'login' %}?next=${encodeURIComponent(currentUrl)}`;
-    }
-    
-    // Проверяем, авторизован ли пользователь
-    const userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
-    
-    // При загрузке страницы проверяем, есть ли pending голос
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('vote_applied') && userIsAuthenticated) {
-            // Если пользователь вернулся после авторизации и есть pending голос
-            applyPendingVote();
-        }
-    });
-    
-    function applyPendingVote() {
-        if (pendingVote && pendingQuoteId) {
-            if (pendingVote === 'like') {
-                likeQuote(pendingQuoteId);
-            } else {
-                dislikeQuote(pendingQuoteId);
-            }
-            // Сбрасываем pending голос
-            pendingVote = null;
-            pendingQuoteId = null;
-        }
-    }
-    
-    async function likeQuote(quoteId) {
-        try {
-            const response = await fetch(`/catalog/like/${quoteId}/`, {
-                method: 'POST',
-                headers: { 
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            
-            if (response.ok) {
-                const likeButton = document.querySelector(`.btn-like`);
-                likeButton.innerHTML = `<span class="btn-icon">👍</span> ${data.new_likes}`;
-            } else if (data.error === 'auth_required') {
-                // Сохраняем голос и показываем модальное окно
-                pendingVote = 'like';
+        // Глобальные переменные для хранения состояния
+        let pendingVote = null;
+        let pendingQuoteId = null;
+        
+        function handleVote(type, quoteId) {
+            if (!userIsAuthenticated) {
+                pendingVote = type;
                 pendingQuoteId = quoteId;
                 showAuthModal();
             } else {
-                console.error('Ошибка лайка:', data.error);
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-        }
-    }
-
-    async function dislikeQuote(quoteId) {
-        try {
-            const response = await fetch(`/catalog/dislike/${quoteId}/`, {
-                method: 'POST',
-                headers: { 
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json'
+                if (type === 'like') {
+                    likeQuote(quoteId);
+                } else {
+                    dislikeQuote(quoteId);
                 }
-            });
-
-            const data = await response.json();
-            
-            if (response.ok) {
-                const dislikeButton = document.querySelector(`.btn-dislike`);
-                dislikeButton.innerHTML = `<span class="btn-icon">👎</span> ${data.new_dislikes}`;
-            } else if (data.error === 'auth_required') {
-                pendingVote = 'dislike';
-                pendingQuoteId = quoteId;
-                showAuthModal();
-            } else {
-                console.error('Ошибка дизлайка:', data.error);
             }
-        } catch (error) {
-            console.error('Ошибка:', error);
         }
-    }
-    
-    // Закрытие модального окна по клику вне его
-    document.getElementById('authModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeModal();
+        
+        function showAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
         }
-    });
+        
+        function closeModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+        
+        function redirectToLogin() {
+            const currentUrl = window.location.pathname;
+            window.location.href = `{% url 'login' %}?next=${encodeURIComponent(currentUrl)}`;
+        }
+        
+        const userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('vote_applied') && userIsAuthenticated) {
+                applyPendingVote();
+            }
+        });
+        
+        function applyPendingVote() {
+            if (pendingVote && pendingQuoteId) {
+                if (pendingVote === 'like') {
+                    likeQuote(pendingQuoteId);
+                } else {
+                    dislikeQuote(pendingQuoteId);
+                }
+                pendingVote = null;
+                pendingQuoteId = null;
+            }
+        }
+        
+        async function likeQuote(quoteId) {
+            try {
+                const response = await fetch(`/catalog/like/${quoteId}/`, {
+                    method: 'POST',
+                    headers: { 
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const likeButton = document.querySelector(`.btn-like`);
+                    likeButton.innerHTML = `<span class="btn-icon">👍</span> ${data.new_likes}`;
+                } else if (data.error === 'auth_required') {
+                    pendingVote = 'like';
+                    pendingQuoteId = quoteId;
+                    showAuthModal();
+                } else {
+                    console.error('Ошибка лайка:', data.error);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function dislikeQuote(quoteId) {
+            try {
+                const response = await fetch(`/catalog/dislike/${quoteId}/`, {
+                    method: 'POST',
+                    headers: { 
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const dislikeButton = document.querySelector(`.btn-dislike`);
+                    dislikeButton.innerHTML = `<span class="btn-icon">👎</span> ${data.new_dislikes}`;
+                } else if (data.error === 'auth_required') {
+                    pendingVote = 'dislike';
+                    pendingQuoteId = quoteId;
+                    showAuthModal();
+                } else {
+                    console.error('Ошибка дизлайка:', data.error);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+        
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>
