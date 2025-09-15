@@ -138,4 +138,4 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-ALLOWED_HOSTS = ['ricardsh.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ricardsh.pythonanywhere.com']
