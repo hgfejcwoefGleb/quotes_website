@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация | Цитаты</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Ваши стили остаются без изменений */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .login-card {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff9ff3;
+            box-shadow: 0 0 0 3px rgba(255, 159, 243, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: #ff9ff3;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .login-footer a:hover {
+            color: #ff6b6b;
+            text-decoration: underline;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <h1>Цитаты</h1>
+                <p>Войдите в свой аккаунт</p>
+            </div>
+            
+            <!-- ИСПРАВЛЕННАЯ ФОРМА -->
+            <form method="post" action="{% url 'login' %}" value="{{ request.GET.next }}" name="next">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="username">Логин</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Введите ваш логин" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Введите ваш пароль" required>
+                </div>
+                
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <button type="submit" class="btn-login">Войти</button>
+            </form>
+            
+            <div class="login-footer">
+                Нет аккаунта? <a href="#">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

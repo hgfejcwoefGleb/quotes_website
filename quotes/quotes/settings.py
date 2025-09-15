@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -64,6 +65,10 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
+        'DIRS': [
+            BASE_DIR / 'templates',  # глобальная папка templates
+        ],
+        'APP_DIRS': True, 
     },
 ]
 
@@ -123,3 +128,14 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'  # Перенаправление после успешного входа
+LOGIN_URL = '/accounts/login/'  # URL для страницы входа
+LOGOUT_REDIRECT_URL = '/'  # Перенапра
+SESSION_COOKIE_AGE = 1209600  # 2 недели
+SESSION_SAVE_EVERY_REQUEST = True
+
+# settings.py
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

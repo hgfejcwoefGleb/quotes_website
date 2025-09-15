@@ -15,10 +15,161 @@
             background-position: center;
             filter: brightness(0.7) saturate(1.1);
         }
+        
+        /* Стили для модального окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .modal-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .modal-btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        /* Стили для меню пользователя */
+        .user-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1001;
+        }
+        
+        .user-info {
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 12px;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-logout {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-login {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(238, 90, 36, 0.4);
+        }
+        
+        /* Для мобильных устройств */
+        @media (max-width: 768px) {
+            .user-menu {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .user-info {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            
+            .btn-logout, .btn-login {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body class="bg-container">
     <div class="bg-wrapper" style="background-image: url('{% static bg_path %}');"></div>
+    
+    <!-- Меню пользователя -->
+    <div class="user-menu">
+        {% if user.is_authenticated %}
+            <span class="user-info">👤 {{ user.username }}</span>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">🚪 Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}?next={{ request.path }}" class="btn-login">🔑 Войти</a>
+        {% endif %}
+    </div>
+    
+    <!-- Модальное окно для авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h3>Требуется авторизация</h3>
+            <p>Чтобы оценивать цитаты, пожалуйста, войдите в систему или зарегистрируйтесь.</p>
+            <div class="modal-buttons">
+                <button onclick="redirectToLogin()" class="modal-btn modal-btn-primary">
+                    Войти
+                </button>
+                <button onclick="closeModal()" class="modal-btn modal-btn-secondary">
+                    Отмена
+                </button>
+            </div>
+        </div>
+    </div>
     
     <div class="content">
         {% if quote %}
@@ -33,12 +184,23 @@
                 </div>
 
                 <div class="actions">
-                    <button onclick="likeQuote('{{ quote.id }}')" class="btn btn-like">
-                        <span class="btn-icon">👍</span> {{ quote.likes }}
-                    </button>
-                    <button onclick="dislikeQuote('{{ quote.id }}')" class="btn btn-dislike">
-                        <span class="btn-icon">👎</span> {{ quote.dislikes }}
-                    </button>
+                    <!-- Кнопки с data-атрибутами для неавторизованных пользователей -->
+                    {% if user.is_authenticated %}
+                        <button onclick="likeQuote('{{ quote.id }}')" class="btn btn-like">
+                            <span class="btn-icon">👍</span> {{ quote.likes }}
+                        </button>
+                        <button onclick="dislikeQuote('{{ quote.id }}')" class="btn btn-dislike">
+                            <span class="btn-icon">👎</span> {{ quote.dislikes }}
+                        </button>
+                    {% else %}
+                        <button onclick="handleVote('like', '{{ quote.id }}')" class="btn btn-like">
+                            <span class="btn-icon">👍</span> {{ quote.likes }}
+                        </button>
+                        <button onclick="handleVote('dislike', '{{ quote.id }}')" class="btn btn-dislike">
+                            <span class="btn-icon">👎</span> {{ quote.dislikes }}
+                        </button>
+                    {% endif %}
+                    
                     <a href="{% url 'random_quote_view' %}" class="btn btn-refresh">
                         <span class="btn-icon">↻</span> Новая цитата
                     </a>
@@ -70,21 +232,126 @@
     </div>
 
     <script>
-        async function likeQuote(quoteId) {
-            await fetch(`/like/${quoteId}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
-            });
-            location.reload();
+    // Глобальные переменные для хранения состояния
+    let pendingVote = null;
+    let pendingQuoteId = null;
+    
+    function handleVote(type, quoteId) {
+        if (!userIsAuthenticated) {
+            // Сохраняем тип голоса для последующего применения
+            pendingVote = type;
+            pendingQuoteId = quoteId;
+            showAuthModal();
+        } else {
+            // Если пользователь авторизован, сразу отправляем голос
+            if (type === 'like') {
+                likeQuote(quoteId);
+            } else {
+                dislikeQuote(quoteId);
+            }
         }
-
-        async function dislikeQuote(quoteId) {
-    await fetch(`/dislike/${quoteId}/`, {  // ← Исправлено: quoteId вместо quote_id
-        method: 'POST',
-        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+    }
+    
+    function showAuthModal() {
+        document.getElementById('authModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+        document.getElementById('authModal').style.display = 'none';
+    }
+    
+    function redirectToLogin() {
+        // Перенаправляем на страницу логина с параметром next
+        const currentUrl = window.location.pathname;
+        window.location.href = `{% url 'login' %}?next=${encodeURIComponent(currentUrl)}`;
+    }
+    
+    // Проверяем, авторизован ли пользователь
+    const userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+    
+    // При загрузке страницы проверяем, есть ли pending голос
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('vote_applied') && userIsAuthenticated) {
+            // Если пользователь вернулся после авторизации и есть pending голос
+            applyPendingVote();
+        }
     });
-    location.reload();
-}
+    
+    function applyPendingVote() {
+        if (pendingVote && pendingQuoteId) {
+            if (pendingVote === 'like') {
+                likeQuote(pendingQuoteId);
+            } else {
+                dislikeQuote(pendingQuoteId);
+            }
+            // Сбрасываем pending голос
+            pendingVote = null;
+            pendingQuoteId = null;
+        }
+    }
+    
+    async function likeQuote(quoteId) {
+        try {
+            const response = await fetch(`/catalog/like/${quoteId}/`, {
+                method: 'POST',
+                headers: { 
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                const likeButton = document.querySelector(`.btn-like`);
+                likeButton.innerHTML = `<span class="btn-icon">👍</span> ${data.new_likes}`;
+            } else if (data.error === 'auth_required') {
+                // Сохраняем голос и показываем модальное окно
+                pendingVote = 'like';
+                pendingQuoteId = quoteId;
+                showAuthModal();
+            } else {
+                console.error('Ошибка лайка:', data.error);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
+    async function dislikeQuote(quoteId) {
+        try {
+            const response = await fetch(`/catalog/dislike/${quoteId}/`, {
+                method: 'POST',
+                headers: { 
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                const dislikeButton = document.querySelector(`.btn-dislike`);
+                dislikeButton.innerHTML = `<span class="btn-icon">👎</span> ${data.new_dislikes}`;
+            } else if (data.error === 'auth_required') {
+                pendingVote = 'dislike';
+                pendingQuoteId = quoteId;
+                showAuthModal();
+            } else {
+                console.error('Ошибка дизлайка:', data.error);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+    
+    // Закрытие модального окна по клику вне его
+    document.getElementById('authModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
     </script>
 </body>
 </html>

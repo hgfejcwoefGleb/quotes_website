@@ -3,7 +3,12 @@ from random import choices, choice
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-# Create your views here.
+from django.conf import settings
+from django.contrib.auth import login, authenticate
+from django.shortcuts import redirect
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
 def get_random_quote()-> Quote:
     """
     Функция отображения для генерации случайной цитаты.
@@ -33,18 +38,45 @@ def get_random_background_image():
 
 @csrf_exempt
 def like_quote(request, quote_id):
+    if request.user.is_anonymous:
+        return JsonResponse({
+            'status': 'error', 
+            'error': 'auth_required',
+            'login_url': f"{settings.LOGIN_URL}?next={request.path}"
+        }, status=403)
+    
     if request.method == 'POST':
         quote = get_object_or_404(Quote, id=quote_id)
         quote.likes += 1
-        quote.save(update_fields=['likes'])  # ← Исправлено: 'likes'
-        return JsonResponse({'status': 'ok'})
+        quote.save(update_fields=['likes'])
+        return JsonResponse({'status': 'ok', 'new_likes': quote.likes})
     return JsonResponse({'status': 'error'}, status=400)
 
 @csrf_exempt
 def dislike_quote(request, quote_id):
+    if request.user.is_anonymous:
+        return JsonResponse({
+            'status': 'error', 
+            'error': 'auth_required',
+            'login_url': f"{settings.LOGIN_URL}?next={request.path}"
+        }, status=403)
+    
     if request.method == 'POST':
-        quote = get_object_or_404(Quote, id=quote_id)  # ← Исправлено: Quote вместо quote
-        quote.dislikes += 1  # ← Исправлено: dislikes вместо dislike
-        quote.save(update_fields=['dislikes'])  # ← Исправлено: update_fields и 'dislikes'
-        return JsonResponse({'status': 'ok'})
+        quote = get_object_or_404(Quote, id=quote_id)
+        quote.dislikes += 1
+        quote.save(update_fields=['dislikes'])
+        return JsonResponse({'status': 'ok', 'new_dislikes': quote.dislikes})
     return JsonResponse({'status': 'error'}, status=400)
+
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    
+    def get_success_url(self):
+        next_url = self.request.POST.get('next') or self.request.GET.get('next')
+        if next_url:
+            return next_url
+        try:
+            return reverse_lazy('random_quote_view')
+        except:
+            print("wefwfwf")
+            return '/'  # fallback на корень, если что-то пошло не так
